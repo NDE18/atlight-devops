@@ -1,0 +1,2 @@
+node ansible_host=10.0.4.234 ansible_user=ec2-user
+node ansible_host=10.0.3.87 ansible_user=ec2-user

@@ -1,0 +1,35 @@
+- name: Configuration du cluster EKS
+  hosts: nodes
+  become: true
+  tasks:
+    - name: Installer les paquets requis
+      yum:
+        name:
+          - docker
+          - git
+        state: present
+
+    - name: Démarrer Docker
+      service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Installer kubectl
+      get_url:
+        url: https://storage.googleapis.com/kubernetes-release/release/v1.27.0/bin/linux/amd64/kubectl
+        dest: /usr/local/bin/kubectl
+        mode: '0755'
+
+    - name: Copier le fichier kubeconfig
+      copy:
+        src: ~/.kube/config
+        dest: /root/.kube/config
+        mode: '0600'
+
+    - name: Vérification de kubectl
+      command: kubectl get nodes
+      register: kubectl_output
+
+    - debug:
+        var: kubectl_output.stdout
